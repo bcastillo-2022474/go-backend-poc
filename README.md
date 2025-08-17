@@ -2,7 +2,7 @@
 
 ## TLDR
 
-A Go microservice built with **Clean Architecture** + **Hexagonal Architecture** patterns. Exposes user signup via both gRPC and HTTP REST APIs. Uses PostgreSQL with type-safe queries (SQLC), schema migrations (Atlas), and comprehensive error handling with full stack traces.
+A Go service built with **Clean Architecture** + **Hexagonal Architecture** patterns. Exposes user signup via both gRPC and HTTP REST APIs. Uses PostgreSQL with type-safe queries (SQLC), schema migrations (Atlas), and comprehensive error handling with full stack traces.
 
 **Tech Stack:** Go, gRPC, HTTP REST, PostgreSQL, SQLC, Atlas, Protocol Buffers, Docker, Testify
 
@@ -10,7 +10,7 @@ A Go microservice built with **Clean Architecture** + **Hexagonal Architecture**
 
 ## Architecture Overview
 
-This project demonstrates a modern Go microservice using **Clean Architecture** (Domain-Driven Design) combined with **Hexagonal Architecture** principles. The codebase is organized around bounded contexts with clear separation of concerns.
+This project demonstrates a modern Go service using **Clean Architecture** (Domain-Driven Design) combined with **Hexagonal Architecture** principles. The codebase is organized around bounded contexts with clear separation of concerns.
 
 ### Core Architectural Principles
 
@@ -217,11 +217,7 @@ HTTP_PORT=8081
 ## Future Enhancements
 
 - [ ] Authentication middleware (JWT)
-- [ ] Request tracing (OpenTelemetry)
-- [ ] Metrics collection (Prometheus)
 - [ ] CI/CD pipeline (GitHub Actions)
-- [ ] API rate limiting
-- [ ] Caching layer (Redis)
 - [ ] Event sourcing/CQRS patterns
 
 ## Contributing
