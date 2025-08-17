@@ -2,10 +2,10 @@ package use_cases
 
 import (
 	"class-backend/core/app/auth/application/use-cases/signup-use-case"
-	"class-backend/core/app/auth/application/use-cases/signup-use-case/mocks"
 	errors2 "class-backend/core/app/shared/errors"
 	"class-backend/core/app/user/domain/entities"
 	userErrors "class-backend/core/app/user/domain/errors"
+	"class-backend/core/tests/mocks"
 	"testing"
 	"time"
 
