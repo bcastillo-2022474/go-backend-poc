@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "github.com/nahualventure/class-backend/proto/generated/go/common/v1;commonv1";
+
+message PageRequest {
+  int32 page = 1;
+  int32 size = 2;
+  string filter = 3;
+  string order_by = 4;
+}
+
+message PageResponse {
+  int32 total = 1;
+  int32 page = 2;
+  int32 size = 3;
+  string next_page_token = 4;
+}
