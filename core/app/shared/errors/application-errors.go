@@ -45,7 +45,6 @@ func (e BaseError) DetailedError() string {
 	return fmt.Sprintf("%s: %s", e.Code, e.Message)
 }
 
-
 // BaseDomainError - business logic violations
 type BaseDomainError struct {
 	BaseError
@@ -64,9 +63,9 @@ func (e InfrastructureError) GetContext() map[string]any { return nil }
 func NewInfrastructureError(operation string, cause error) *InfrastructureError {
 	underlying := cause
 	if underlying == nil {
-		underlying = errors.New(InternalError.String())
+		underlying = errors.New(operation)
 	} else {
-		underlying = errors.Wrap(cause, InternalError.String())
+		underlying = errors.Wrap(cause, operation)
 	}
 
 	return &InfrastructureError{

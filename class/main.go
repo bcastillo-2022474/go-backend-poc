@@ -14,10 +14,12 @@ import (
 	"time"
 
 	"class-backend/class/auth/handlers"
+	"class-backend/class/shared/authorization"
 	authv1 "class-backend/proto/generated/go/auth/v1"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
@@ -27,17 +29,19 @@ func main() {
 	// Load configuration
 	config := loadConfig()
 
-	// Setup database connection
-	db, err := setupDatabase(config.DatabaseURL)
+	// Setup database connection pool
+	pool, err := setupDatabase(config.DatabaseURL)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer func(db *pgx.Conn, ctx context.Context) {
-		err := db.Close(ctx)
-		if err != nil {
-			log.Fatalf("Failed to close database connection: %v", err)
-		}
-	}(db, context.Background())
+	defer pool.Close()
+
+	// Setup authorization service
+	authzService, err := setupAuthorization(pool, config.Tenants)
+	if err != nil {
+		log.Fatalf("Failed to setup authorization: %v", err)
+	}
+	defer authzService.Close()
 
 	// Setup servers
 	var wg sync.WaitGroup
@@ -46,7 +50,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		if err := startGRPCServer(config.GRPCPort, db); err != nil {
+		if err := startGRPCServer(config.GRPCPort, pool, authzService); err != nil {
 			log.Fatalf("gRPC server failed: %v", err)
 		}
 	}()
@@ -63,11 +67,11 @@ func main() {
 	// Graceful shutdown
 	setupGracefulShutdown()
 
-	log.Println("🚀 Server started successfully!")
-	log.Printf("📡 gRPC server: localhost:%s", config.GRPCPort)
-	log.Printf("🌐 HTTP API: http://localhost:%s", config.HTTPPort)
-	log.Printf("📋 Signup endpoint: POST http://localhost:%s/api/v1/auth/signup", config.HTTPPort)
-	log.Printf("📖 OpenAPI spec: http://localhost:%s/openapi.json", config.HTTPPort)
+	log.Println("Server started successfully!")
+	log.Printf("gRPC server: localhost:%s", config.GRPCPort)
+	log.Printf("HTTP API: http://localhost:%s", config.HTTPPort)
+	log.Printf("Signup endpoint: POST http://localhost:%s/api/v1/auth/signup", config.HTTPPort)
+	log.Printf("OpenAPI spec: http://localhost:%s/openapi.json", config.HTTPPort)
 
 	wg.Wait()
 }
@@ -76,6 +80,7 @@ type Config struct {
 	DatabaseURL string
 	GRPCPort    string
 	HTTPPort    string
+	Tenants     []string
 }
 
 func loadConfig() *Config {
@@ -83,6 +88,7 @@ func loadConfig() *Config {
 		DatabaseURL: getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5437/edoo_class?sslmode=disable"),
 		GRPCPort:    getEnv("GRPC_PORT", "8080"),
 		HTTPPort:    getEnv("HTTP_PORT", "8081"),
+		Tenants:     []string{"tenant1", "tenant2"}, // TODO: Load from environment or database
 	}
 }
 
@@ -93,25 +99,44 @@ func getEnv(key, defaultValue string) string {
 	return defaultValue
 }
 
-func setupDatabase(databaseURL string) (*pgx.Conn, error) {
+func setupDatabase(databaseURL string) (*pgxpool.Pool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	log.Printf("Connecting to database: %s", maskPassword(databaseURL))
 
-	conn, err := pgx.Connect(ctx, databaseURL)
+	// Create connection pool
+	pool, err := pgxpool.New(ctx, databaseURL)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %w", err)
+		return nil, fmt.Errorf("failed to create connection pool: %w", err)
 	}
 
 	// Test the connection
-	if err := conn.Ping(ctx); err != nil {
+	if err := pool.Ping(ctx); err != nil {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	log.Println("✅ Successfully connected to database")
+	log.Println("Successfully connected to database with connection pool")
+	return pool, nil
+}
 
-	return conn, nil
+func setupAuthorization(pool *pgxpool.Pool, tenants []string) (*authorization.CasbinService, error) {
+	// Convert pgxpool to database/sql for Casbin adapter
+	sqlDB := stdlib.OpenDBFromPool(pool)
+
+	// Initialize Casbin service
+	authzService, err := authorization.NewCasbinService(
+		sqlDB,
+		"configs/rbac_model.conf",
+		"policies.yaml",
+		tenants,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create authorization service: %w", err)
+	}
+
+	log.Printf("Authorization service initialized for tenants: %v", tenants)
+	return authzService, nil
 }
 
 func maskPassword(databaseURL string) string {
@@ -131,19 +156,22 @@ func maskPassword(databaseURL string) string {
 	return databaseURL
 }
 
-func startGRPCServer(port string, db *pgx.Conn) error {
+func startGRPCServer(port string, pool *pgxpool.Pool, authzService *authorization.CasbinService) error {
 	lis, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		return fmt.Errorf("failed to listen on port %s: %w", port, err)
 	}
 
-	// Create gRPC server
+	// Create gRPC server with authorization middleware
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(loggingInterceptor),
+		grpc.ChainUnaryInterceptor(
+			authorization.AuthorizationInterceptor(authzService),
+			loggingInterceptor,
+		),
 	)
 
 	// Register services
-	authHandler := handlers.NewAuthHandler(db)
+	authHandler := handlers.NewAuthHandler(pool)
 	authv1.RegisterAuthServiceServer(grpcServer, authHandler)
 
 	// Enable reflection for development

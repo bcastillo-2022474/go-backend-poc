@@ -10,15 +10,16 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type PostgresUserRepository struct {
-	db      *pgx.Conn
+	db      *pgxpool.Pool
 	queries *userdb.Queries
 }
 
-func NewPostgresUserRepository(db *pgx.Conn) ports.UserRepository {
+func NewPostgresUserRepository(db *pgxpool.Pool) ports.UserRepository {
 	return &PostgresUserRepository{
 		db:      db,
 		queries: userdb.New(db),

@@ -12,7 +12,7 @@ import (
 )
 
 func (ah *AuthHandler) Signup(ctx context.Context, req *authv1.SignupRequest) (*authv1.SignupResponse, error) {
-	userAdapter := adapters.NewPostgresUserRepository(ah.db)
+	userAdapter := adapters.NewPostgresUserRepository(ah.pool)
 	useCase := signup_use_case.NewCreateUserUseCase(userAdapter)
 
 	// Create command with validation

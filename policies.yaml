@@ -1,0 +1,18 @@
+roles:
+  admin:
+    permissions:
+      all: [all]
+
+  instructor:
+    permissions:
+      assignment: [create, view, edit, grade]
+      course: [view, edit]  # only their courses
+      student: [view]       # enrolled students
+      grade: [assign, view]
+
+  student:
+    permissions:
+      assignment: [view, submit]
+      course: [view]
+      grade: [view]         # only their grades
+      profile: [edit]       # their own profile
