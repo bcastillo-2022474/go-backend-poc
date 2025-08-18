@@ -306,7 +306,7 @@ DATABASE_URL=postgres://postgres:postgres@localhost:5437/edoo_class?sslmode=disa
 GRPC_PORT=8080
 HTTP_PORT=8081
 JWT_SECRET=your-secret-key-here
-TENANTS=tenant1,tenant2,tenant3
+TENANTS=tenant1,tenant2,tenant3 # this would actually be loaded from DB on every startup
 ```
 
 ## Security & Authorization
@@ -343,8 +343,6 @@ TENANTS=tenant1,tenant2,tenant3
 - [ ] Comprehensive test suite (unit + integration + authorization tests)
 - [ ] CI/CD pipeline (GitHub Actions)
 - [ ] API documentation with Swagger/OpenAPI
-- [ ] Performance optimization and caching
-- [ ] Event sourcing for audit trails
 
 ## Contributing
 
