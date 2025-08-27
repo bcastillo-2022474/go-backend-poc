@@ -102,3 +102,6 @@ debug.test
 # Local configuration overrides
 config.local.*
 settings.local.*
+
+# Generated code
+*/generated/
