@@ -1,0 +1,82 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+env:
+  GO_VERSION: '1.24'
+
+jobs:
+  lint-and-format:
+    name: Lint and Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Generate SQLC code
+        run: |
+          go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+          sqlc generate
+
+      - name: Run gofmt (excluding generated files)
+        run: |
+          files=$(find . -name "*.go" -not -path "*/generated/*" -not -path "./vendor/*")
+          if [ -n "$files" ]; then
+            unformatted=$(echo "$files" | xargs gofmt -s -l)
+            if [ -n "$unformatted" ]; then
+              echo "The following files are not formatted:"
+              echo "$unformatted"
+              exit 1
+            fi
+          fi
+
+      - name: Run go vet (excluding generated files)
+        run: go vet $(go list ./... | grep -v '/generated/')
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Run core tests
+        run: go test ./core/tests/... -v -cover -coverprofile=coverage.out
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [ lint-and-format, test ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Generate SQLC code
+        run: |
+          go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+          sqlc generate
+
+      - name: Build binary
+        run: |
+          CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/app ./infra/main.go
