@@ -68,7 +68,6 @@ coverage.html
 
 # Air live reload tool
 tmp/
-.air.toml
 
 # Generated documentation
 docs/generated/
