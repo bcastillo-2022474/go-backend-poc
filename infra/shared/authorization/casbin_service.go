@@ -228,7 +228,7 @@ func (c *CasbinService) PrintDebugInfo() {
 	} else {
 		fmt.Println("Error: Service not properly initialized")
 	}
-	fmt.Println("=========================\n")
+	fmt.Println("=========================")
 }
 
 func (c *CasbinService) GetEnforcer() *casbin.Enforcer {

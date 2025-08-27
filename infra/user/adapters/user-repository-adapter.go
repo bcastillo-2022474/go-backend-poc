@@ -1,10 +1,10 @@
 package adapters
 
 import (
-	userdb "class-backend/class/user/generated/sqlc"
 	appErrors "class-backend/core/app/shared/errors"
 	"class-backend/core/app/user/domain/entities"
 	"class-backend/core/app/user/domain/ports"
+	db "class-backend/generated/sqlc"
 	"context"
 	"errors"
 
@@ -16,13 +16,13 @@ import (
 
 type PostgresUserRepository struct {
 	db      *pgxpool.Pool
-	queries *userdb.Queries
+	queries *db.Queries
 }
 
-func NewPostgresUserRepository(db *pgxpool.Pool) ports.UserRepository {
+func NewPostgresUserRepository(dbInstance *pgxpool.Pool) ports.UserRepository {
 	return &PostgresUserRepository{
-		db:      db,
-		queries: userdb.New(db),
+		db:      dbInstance,
+		queries: db.New(dbInstance),
 	}
 }
 
@@ -39,7 +39,7 @@ func (p PostgresUserRepository) Create(user *entities.User, password string) (*e
 		return nil, appErrors.PropagateError(err)
 	}
 
-	dbUser, err := p.queries.CreateUser(ctx, userdb.CreateUserParams{
+	dbUser, err := p.queries.CreateUser(ctx, db.CreateUserParams{
 		ID:           pgUUID,
 		Name:         user.Name,
 		Email:        user.Email,

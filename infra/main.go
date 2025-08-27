@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"class-backend/class/shared/authorization"
+	"class-backend/infra/shared/authorization"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humagin"
@@ -135,7 +135,7 @@ func setupAuthorization(pool *pgxpool.Pool, tenants []string) (*authorization.Ca
 
 	authzService, err := authorization.NewCasbinService(
 		sqlDB,
-		"configs/rbac_model.conf",
+		"infra/configs/rbac_model.conf",
 		"policies.yaml",
 		tenants, // should be loaded from database
 	)
