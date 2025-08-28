@@ -82,16 +82,89 @@ http://localhost:8081/docs
 
 ---
 
-## Development Setup
+## 🚀 Getting Started
 
-**Requirements:** Go 1.21+, Docker, Atlas CLI
+### Prerequisites
+
+Before setting up this project, ensure you have the following tools installed:
+
+| Tool | Version | Installation |
+|------|---------|-------------|
+| **Go** | 1.24+ | [Download](https://golang.org/dl/) |
+| **Docker** | Latest | [Download](https://docs.docker.com/get-docker/) |
+| **Atlas CLI** | v0.36+ | `go install ariga.io/atlas/cmd/atlas@latest` |
+| **Air** | v1.62+ | `go install github.com/air-verse/air@latest` |
+| **SQLC** | Latest | `go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest` |
+
+### Quick Setup
+
+**Option 1: Using Makefile (Recommended)**
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd class-backend-poc
+
+# Complete setup and start development server
+make dev-setup
+```
+
+**Option 2: Manual Setup**
+```bash
+# 1. Start PostgreSQL database
+make db-up
+# or: docker compose up -d
+
+# 2. Apply database migrations  
+make migrate
+# or: atlas migrate apply --env local
+
+# 3. Generate SQLC code
+make generate  
+# or: sqlc generate
+
+# 4. Start development server with hot reload
+make dev
+# or: air
+```
+
+### Verify Setup
+
+After setup, verify everything is working:
+
+1. **Health Check**: Visit http://localhost:8081/health
+2. **API Documentation**: Visit http://localhost:8081/docs
+3. **Run Tests**: `make test` or `go test ./... -cover`
+
+### Development Workflow
 
 ```bash
-docker-compose up -d                # start DB
-atlas migrate apply --env local     # apply migrations
-cd class/user && sqlc generate      # generate SQLC code
-go run class/main.go                # run server
+# Start development (with hot reload)
+make dev
+
+# Run tests
+make test
+
+# Apply new migrations
+make migrate
+
+# Regenerate SQLC code (after schema changes)
+make generate
+
+# Stop database
+make db-down
 ```
+
+### Available Make Commands
+
+Run `make help` to see all available commands:
+- `make db-up` - Start PostgreSQL database
+- `make migrate` - Apply database migrations
+- `make generate` - Generate SQLC code  
+- `make dev` - Start development server
+- `make build` - Build the application
+- `make test` - Run tests
+- `make setup` - Setup development environment
+- `make dev-setup` - Complete setup + start server
 
 ---
 
