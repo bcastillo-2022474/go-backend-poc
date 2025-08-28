@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	appErrors "class-backend/core/app/shared/errors"
+	appErrors "github.com/nahualventure/class-backend/core/app/shared/errors"
 
-	"github.com/Blank-Xu/sql-adapter"
+	sqladapter "github.com/Blank-Xu/sql-adapter"
 	"github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"
 )

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	appErrors "class-backend/core/app/shared/errors"
+	appErrors "github.com/nahualventure/class-backend/core/app/shared/errors"
 
 	"github.com/casbin/casbin/v2"
 	_ "github.com/lib/pq"

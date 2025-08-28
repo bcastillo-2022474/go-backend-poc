@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"class-backend/core/app/user/domain/entities"
+	"github.com/nahualventure/class-backend/core/app/user/domain/entities"
 
 	"github.com/stretchr/testify/mock"
 )

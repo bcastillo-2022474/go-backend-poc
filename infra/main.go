@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"class-backend/infra/shared/authorization"
+	"github.com/nahualventure/class-backend/infra/shared/authorization"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humagin"

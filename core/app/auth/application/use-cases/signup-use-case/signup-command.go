@@ -1,8 +1,8 @@
 package signup_use_case
 
 import (
-	"class-backend/core/app/shared/errors"
-	"class-backend/core/app/shared/utils"
+	"github.com/nahualventure/class-backend/core/app/shared/errors"
+	"github.com/nahualventure/class-backend/core/app/shared/utils"
 
 	"github.com/go-playground/validator/v10"
 )

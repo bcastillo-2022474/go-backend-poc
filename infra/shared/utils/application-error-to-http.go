@@ -1,9 +1,9 @@
 package utils
 
 import (
-	errors2 "class-backend/core/app/shared/errors"
-	userErrors "class-backend/core/app/user/domain/errors"
 	"errors"
+	errors2 "github.com/nahualventure/class-backend/core/app/shared/errors"
+	userErrors "github.com/nahualventure/class-backend/core/app/user/domain/errors"
 	"log"
 	"net/http"
 )

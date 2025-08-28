@@ -1,8 +1,8 @@
 package utils
 
 import (
-	appErrors "class-backend/core/app/shared/errors"
 	"errors"
+	appErrors "github.com/nahualventure/class-backend/core/app/shared/errors"
 
 	"github.com/go-playground/validator/v10"
 )

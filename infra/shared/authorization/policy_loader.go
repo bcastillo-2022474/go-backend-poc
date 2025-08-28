@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	appErrors "class-backend/core/app/shared/errors"
+	appErrors "github.com/nahualventure/class-backend/core/app/shared/errors"
 
 	"github.com/casbin/casbin/v2"
 	"gopkg.in/yaml.v3"

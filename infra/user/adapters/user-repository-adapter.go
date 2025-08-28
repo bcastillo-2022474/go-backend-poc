@@ -1,12 +1,12 @@
 package adapters
 
 import (
-	appErrors "class-backend/core/app/shared/errors"
-	"class-backend/core/app/user/domain/entities"
-	"class-backend/core/app/user/domain/ports"
-	db "class-backend/generated/sqlc"
 	"context"
 	"errors"
+	appErrors "github.com/nahualventure/class-backend/core/app/shared/errors"
+	"github.com/nahualventure/class-backend/core/app/user/domain/entities"
+	"github.com/nahualventure/class-backend/core/app/user/domain/ports"
+	db "github.com/nahualventure/class-backend/generated/sqlc"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"

@@ -1,7 +1,7 @@
 package errors
 
 import (
-	errors2 "class-backend/core/app/shared/errors"
+	errors2 "github.com/nahualventure/class-backend/core/app/shared/errors"
 	"time"
 
 	"github.com/cockroachdb/errors"

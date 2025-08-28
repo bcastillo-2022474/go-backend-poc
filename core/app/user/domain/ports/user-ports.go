@@ -1,7 +1,7 @@
 package ports
 
 import (
-	"class-backend/core/app/user/domain/entities"
+	"github.com/nahualventure/class-backend/core/app/user/domain/entities"
 )
 
 type UserRepository interface {

@@ -1,7 +1,7 @@
 package entities
 
 import (
-	appErrors "class-backend/core/app/shared/errors"
+	appErrors "github.com/nahualventure/class-backend/core/app/shared/errors"
 	"time"
 
 	"github.com/cockroachdb/errors"

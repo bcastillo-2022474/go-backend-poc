@@ -1,10 +1,10 @@
 package signup_use_case
 
 import (
-	"class-backend/core/app/shared/errors"
-	"class-backend/core/app/user/domain/entities"
-	userErrors "class-backend/core/app/user/domain/errors"
-	"class-backend/core/app/user/domain/ports"
+	"github.com/nahualventure/class-backend/core/app/shared/errors"
+	"github.com/nahualventure/class-backend/core/app/user/domain/entities"
+	userErrors "github.com/nahualventure/class-backend/core/app/user/domain/errors"
+	"github.com/nahualventure/class-backend/core/app/user/domain/ports"
 	"time"
 
 	"github.com/google/uuid"

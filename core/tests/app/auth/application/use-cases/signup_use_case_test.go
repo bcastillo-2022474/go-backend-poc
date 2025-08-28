@@ -1,11 +1,11 @@
 package use_cases
 
 import (
-	"class-backend/core/app/auth/application/use-cases/signup-use-case"
-	errors2 "class-backend/core/app/shared/errors"
-	"class-backend/core/app/user/domain/entities"
-	userErrors "class-backend/core/app/user/domain/errors"
-	"class-backend/core/tests/mocks"
+	"github.com/nahualventure/class-backend/core/app/auth/application/use-cases/signup-use-case"
+	errors2 "github.com/nahualventure/class-backend/core/app/shared/errors"
+	"github.com/nahualventure/class-backend/core/app/user/domain/entities"
+	userErrors "github.com/nahualventure/class-backend/core/app/user/domain/errors"
+	"github.com/nahualventure/class-backend/core/tests/mocks"
 	"testing"
 	"time"
 
